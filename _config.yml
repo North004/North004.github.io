@@ -14,12 +14,12 @@ timezone: Europe/London
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: North004 Blog # the main title
+title: North004's Blog # the main title
 
-tagline: My site where i post blogs # it will display as the subtitle
+tagline: Just a fucking blog # it will display as the subtitle
 
-description: >- # used by seo meta and the atom feed
-  A place where i post about what i do and what ive done
+description: >- # used by seo meta and the atom feedMy
+  My blog where i post tutorials and projects that i am working on.
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
@@ -29,16 +29,16 @@ github:
   username: North004 # change to your GitHub username
 
 twitter:
-  username: twitter_username # change to your Twitter username
+  username: NorthSky004 # change to your Twitter username
 
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: Jamie Something
-  email: example@domain.com # change to your email address
+  name: Jamie
+  email: northernskytechnology@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/username # change to your Twitter homepage
+    - https://twitter.com/NorthSky004 # change to your Twitter homepage
     - https://github.com/North004 # change to your GitHub homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
@@ -161,7 +161,7 @@ kramdown:
     css_class: highlight
     # default_lang: console
     span:
-      line_numbers: false
+      line_numbers: true
     block:
       line_numbers: true
       start_line: 1
@@ -223,5 +223,4 @@ jekyll-archives:
   permalinks:
     tag: /tags/:name/
     category: /categories/:name/
-
 
