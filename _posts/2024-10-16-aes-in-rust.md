@@ -4,6 +4,7 @@ date: 2024-10-16 23:58:00 +01:00
 categories: [encryption]
 tags: [math, security, rust]
 math: true
+comments: true
 ---
 
 ## Intro 
