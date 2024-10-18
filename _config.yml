@@ -119,7 +119,7 @@ comments:
   # Giscus options › https://giscus.app
   giscus:
     repo: North004/North004.github.io # <gh-username>/<repo>
-    repo_id:  873893031
+    repo_id: 873893031
     category: General
     category_id: 42849710
     mapping: # optional, default to 'pathname'
