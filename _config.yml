@@ -119,9 +119,9 @@ comments:
   # Giscus options › https://giscus.app
   giscus:
     repo: North004/North004.github.io # <gh-username>/<repo>
-    repo_id: 873893031
+    repo_id: R_kgDONBaMpw
     category: General
-    category_id: 42849710
+    category_id: DIC_kwDONBaMp84CjdWu
     mapping: pathname # optional, default to 'pathname'
     strict: 0 # optional, default to '0'
     input_position: bottom # optional, default to 'bottom'
