@@ -5,6 +5,9 @@ categories: [encryption]
 tags: [math, security, rust]
 math: true
 comments: true
+image:
+  path: /assets/img/common/aes-encryption.jpg
+  alt: Logo of a computer motherboard with a padlock across it
 ---
 
 ## Intro 
