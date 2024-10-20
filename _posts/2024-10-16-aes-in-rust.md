@@ -140,22 +140,22 @@ this works by passing a mutable referance the block in its current state and cre
 which changes it in place
 
 # Mix Cols
-The **mix cols** operation can be represented as another linear transformation $$ P $$ which again maps a $$ 4*4 $$ matrix as follows
+The **mix cols** operation can be represented as another linear transformation that is applied to each column $$ P $$ which maps a $$ 4*1 $$ matrix as follows
 $$
-P : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4}
+P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1}
 $$
 
 Where:
 - $$ \mathbb{B} $$ is the set of bytes  $$ \mathbb{B} = \{0,1\}^8 $$.
 
-The map P takes a matrix:
+The map $ P $ takes a matrix:
 
 $$ 
 \begin{bmatrix} 
-b_0 & b_4 & b_8 & b_{12} \\
-b_1 & b_5 & b_9 & b_{13} \\
-b_2 & b_6 & b_{10} & b_{14} \\
-b_3 & b_7 & b_{11} & b_{15}
+b_0 \\
+b_1 \\
+b_2 \\
+b_3
 \end{bmatrix}
 $$
 
@@ -215,4 +215,27 @@ $ 255 \cdot 3 = 26 $ in $ GF(2^8) $
 
 > The operators + and $ \oplus $ are interchangable ans used only to clarify when XOR is being used
 {: .prompt-info }
+
+### Back to Transformation
+now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation $ P $ 
+which maps a 4*1 matrix to another 4*1 matrix and is defined below
+$$
+P\left(\begin{bmatrix} 
+b_0 \\
+b_1 \\
+b_2 \\
+b_3 \\
+\end{bmatrix}\right)
+=
+\begin{bmatrix} 
+b’_0 \\
+b‘_1 \\
+b‘_2 \\
+b‘_3 \\
+\end{bmatrix}\right)
+$$
+
+
+
+
 
