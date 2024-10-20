@@ -219,6 +219,7 @@ $ 255 \cdot 3 = 26 $ in $ GF(2^8) $
 ### Back to Transformation
 now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation $ P $ 
 which maps a 4*1 matrix to another 4*1 matrix and is defined below
+
 $$
 P\left(\begin{bmatrix} 
 b_0 \\
