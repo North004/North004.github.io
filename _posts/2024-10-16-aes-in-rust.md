@@ -1,4 +1,4 @@
----
+p---
 title: AES In Rust
 date: 2024-10-16 23:58:00 +01:00
 categories: [encryption]
@@ -17,6 +17,9 @@ AES is being used by most militaries around the world and for most encryption ne
 
 ## Project Goal
 In this tutorial we will be implementing 128 Bit AES
+> Do not use this or any other untested encryption in production you should only use libraries that have had security audits
+one such crate is [Aes-Gcm](https://crates.io/crates/aes-gcm)
+{: .prompt-danger }
 
 ## Overview 
 Aes encryption can be seperated into 4 steps allowing us to easier understand the problem.
