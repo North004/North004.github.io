@@ -140,10 +140,9 @@ this works by passing a mutable referance the block in its current state and cre
 which changes it in place
 
 # Mix Cols
-The **mix cols** operation can be represented as another linear transformation that is applied to each column $$ P $$ which maps a $$ 4 \times 1 $$ matrix as follows
-$$
-P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1}
-$$
+The **mix cols** operation can be represented as another linear transformation that is applied to each column $$ P $$ which maps a $$ 4 \times 1 $$ matrix as follows:
+
+$$ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $$
 
 Where:
 - $$ \mathbb{B} $$ is the set of bytes  $$ \mathbb{B} = \{0,1\}^8 $$.
