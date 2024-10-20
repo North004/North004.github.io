@@ -154,7 +154,7 @@ before we cover ths transformation we first have to understsnd galios fields $ G
    $ x^8 + 1 $  
 
 5. **Modulo Reduction**:  
-   But this does not belong inthe field $ GF(2^8) $ so we must reduce modulo the polynomial:  
+   But this does not belong in the field $ GF(2^8) $ so we must reduce modulo the polynomial:  
    $ x^8+x^4+x^3+x^1+1 $  
    We can use the following equivilance to reduce the polynomial:  
    $ x^8 \equiv x^4 + x^3 + x^1 + 1\space(mod \space x^8+x^4+x^3+x^1) $  
@@ -163,7 +163,7 @@ before we cover ths transformation we first have to understsnd galios fields $ G
 6. **Simplification**: 
    This is the reduced polynomial:  
    $ x^4 + x^3 +x^1 + 1 + 1 $
-   We can now simplify it using additive property of the field:
+   We can now simplify it using additive property of the field:  
    $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $  
 
 7. **Converting**:  
