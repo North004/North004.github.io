@@ -74,7 +74,7 @@ fn sub_bytes(state: &mut [u8;16]) {
 ```
 
 ## Shift Rows
-the **shift rows** operation can be represented as a map $$ M $$, which transforms a $$ 4 \times 4 $$ matrix, where:
+the **shift rows** operation can be represented as a map $$ M $$, which transforms a $$ 4 \times 4 $$ matrix, defined below:
 - $ M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4} $
 - $$ \mathbb{B} $$ is the set of bytes  $$ \mathbb{B} = \{0,1\}^8 $$.
 The map M takes a matrix:
@@ -147,52 +147,52 @@ before we cover ths transformation we first have to look at the galios field $ G
 
 1. we will now show the multiplication of 255 by 3 in $ GF(2^8) $:
 
- $ 255 \cdot 3  $
+  $ 255 \cdot 3  $
 
 2. We will now write each in its polynomial from:
 
- $ 255 = x^7 + x^6 + x^5 + x^4 + x^3 + x^2 + x + 1 $
+  $ 255 = x^7 + x^6 + x^5 + x^4 + x^3 + x^2 + x + 1 $
 
- $ 3 = x + 1 $
+  $ 3 = x + 1 $
 
 3. We can now calculate this with polynomial multiplication:
 
- $ (x^7+x^6+x^5+x^5+x^4+x^3+x^2+x+1)(x+1) = x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+x^7+x^6+x^5+x^4+x^3+x^2+x^1+1 $
+  $ (x^7+x^6+x^5+x^5+x^4+x^3+x^2+x+1)(x+1) = x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+x^7+x^6+x^5+x^4+x^3+x^2+x^1+1 $
 
 4. We can now rearange this and use the fact that $ x^n \oplus x^n = 0 $:
 
- $ x^8 + (x^7\oplus x^7) +(x^6\oplus x^6)+(x^5\oplus x^5)+(x^4\oplus x^4)+(x^3\oplus x^3)+(x^2\oplus x^2)+(x^1\oplus x^1) + 1 $
+  $ x^8 + (x^7\oplus x^7) +(x^6\oplus x^6)+(x^5\oplus x^5)+(x^4\oplus x^4)+(x^3\oplus x^3)+(x^2\oplus x^2)+(x^1\oplus x^1) + 1 $
 
 5. Thus giving us:
 
- $ x^8 + 1 $
+  $ x^8 + 1 $
 
 6. But this does not belong to the field $ GF(2^8) $ so we must reduce modulo the polynomial:
 
- $ x^8+x^4+x^3+x^1+1 $
+  $ x^8+x^4+x^3+x^1+1 $
 
 7. we can use the fact that: 
 
- $ x^8 \equiv x^4 + x^3 + x^1 + 1\space(mod \space x^8+x^4+x^3+x^1) $
+  $ x^8 \equiv x^4 + x^3 + x^1 + 1\space(mod \space x^8+x^4+x^3+x^1) $
 
 8. to rewrite our result giving us:
 
- $ x^4 + x^3 +x^1 + 1 + 1 $
+  $ x^4 + x^3 +x^1 + 1 + 1 $
 
 9. then simplifying using additivng property to give us:
 
- $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $
+  $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $
 
 10. This is equivilant to 00011010 in binary and 26 in denary:
 
 11. thus giving us the following result:
 
- $ 255 \cdot 3 = 26 $ in $ GF(2^8) $
+  $ 255 \cdot 3 = 26 $ in $ GF(2^8) $
 
 > The operators + and $ \oplus $ are interchangable ans used only to clarify when XOR is being used
 {: .prompt-info }
 
-### Back to Transformation
+### Now onto the transformation
 now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation 
 $$ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $$
 where $ P(c_i) = Mc_i $  where i is the column index and M is defined as follows:
