@@ -74,7 +74,7 @@ fn sub_bytes(state: &mut [u8;16]) {
 ```
 
 # Shift Rows
-the **shift rows** operation can be represented as a map $$ M $$, which transforms a $$ 4 * 4 $$ matrix as follows:
+the **shift rows** operation can be represented as a map $$ M $$, which transforms a $$ 4 \times 4 $$ matrix as follows:
 $$
 M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4}
 $$
@@ -140,7 +140,7 @@ this works by passing a mutable referance the block in its current state and cre
 which changes it in place
 
 # Mix Cols
-The **mix cols** operation can be represented as another linear transformation that is applied to each column $$ P $$ which maps a $$ 4*1 $$ matrix as follows
+The **mix cols** operation can be represented as another linear transformation that is applied to each column $$ P $$ which maps a $$ 4 \times 1 $$ matrix as follows
 $$
 P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1}
 $$
@@ -164,12 +164,11 @@ and transforms it by multiplying it with another matrix in the finite field $$ G
 ### $ GF(2^8) $ Galios Field
 - $ GF(2^8) $ is a finite field with $ 2^8 $ elements 
 - The elements of this field are 8 bit numbers (bytes) represented as binary polynomials
-- Operations:
-  * Addition in $ GF(2^8) $ is defined as bitwise XOR between two bytes as $ a \oplus b $
-  * Multiplication in $ GF(2^8) $ involves standard polynomial multiplication followed by a reduction moduolo an irreducible polynomial of degree 8 one such polynomial is $ x^8 + x^4 + x^3 +x + 1 $
+- Addition in $ GF(2^8) $ is defined as bitwise XOR between two bytes as $ a \oplus b $
+- Multiplication in $ GF(2^8) $ involves standard polynomial multiplication followed by a reduction moduolo an irreducible polynomial of degree 8 one such polynomial is $ x^8 + x^4 + x^3 +x + 1 $
 
 ### Example in $ GF(2^8) $
-we will now show the multiplicstion of 255 and 3 in $ GF(2^8) $
+we will now show the multiplication of 255 by 3 in $ GF(2^8) $
 
 $ 255 \oplus 3  $
 
@@ -207,7 +206,7 @@ then simplifying using additivng property to give us
 
 $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $
 
-This is equivilant to 0b00011010  which is 26
+This is equivilant to $ 0b00011010 $ which is $ 26 $
 
 thus giving us the following result
 
@@ -218,7 +217,8 @@ $ 255 \cdot 3 = 26 $ in $ GF(2^8) $
 
 ### Back to Transformation
 now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation $ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $
-where $ P(c_i) = Mc_i $ where i is the column index and M is defined as follows
+where $ P(c_i) = Mc_i $  where i is the column index and M is defined as follows
+
 $$
 M = \begin{pmatrix}
 2 & 3 & 1 & 1 \\
@@ -227,6 +227,7 @@ M = \begin{pmatrix}
 3 & 1 & 1 & 2
 \end{pmatrix}
 $$
+
 
 
 
