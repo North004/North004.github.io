@@ -70,3 +70,21 @@ fn sub_bytes(state: &mut [u8;16]) {
     }
 }
 ```
+
+# Shift Rows
+the **shift rows** operation can be represented as a map \(M \), which transforms a 4*4 matrix as follows:
+\[
+M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4}
+\]
+
+$$ 
+\text{Matrix} = \begin{bmatrix} 
+b_0 & b_1 & b_2 & b_3 \\
+b_4 & b_5 & b_6 & b_7 \\
+b_8 & b_9 & b_{10} & b_{11} \\
+b_{12} & b_{13} & b_{14} & b_{15}
+\end{bmatrix}
+$$
+
+
+
