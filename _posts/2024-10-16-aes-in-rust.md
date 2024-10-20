@@ -139,4 +139,97 @@ which changes it in place
 
 # Mix Cols
 The **mix cols** operation can be represented as another linear transformation $$ P $$ which again maps a $$ 4*4 $$ matrix as follows
+$$
+P : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4}
+$$
 
+Where:
+- $$ \mathbb{B} $$ is the set of bytes  $$ \mathbb{B} = \{0,1\}^8 $$.
+
+The map P takes a matrix:
+
+$$ 
+\begin{bmatrix} 
+b_0 & b_4 & b_8 & b_{12} \\
+b_1 & b_5 & b_9 & b_{13} \\
+b_2 & b_6 & b_{10} & b_{14} \\
+b_3 & b_7 & b_{11} & b_{15}
+\end{bmatrix}
+$$
+
+and transforms it by multiplying it with another matrix in the finite field $$ GF(2^8) $$ before we show how this function works we will first cover this field
+
+### $ GF(2^8) $ Galios Field
+- $ GF(2^8) $ is a finite field with $ 2^8 $ elements 
+- The elements of this field are 8 bit numbers (bytes) represented as binary polynomials
+  $$ 0b00000011 = 0x^7 + ... + 0x^3 + 0x^2 + 1x^1 + 1x^0 = x + 1 $$
+- Operations:
+  * Addition in $ GF(2^8) $ is defined as bitwise XOR between two bytes as $ a \oplus b $
+  * Multiplication in $ GF(2^8) $ involves standard polynomial multiplication followed by a reduction moduolo an irreducible polynomial of degree 8 one such polynomial is $ x^8 + x^4 + x^3 +x + 1 $
+
+#### Below we will show an example
+we will now show an example multiplying numbers 255 and 3 in the finite field $ GF(2^8) $
+
+$$
+255 \oplus 3  
+$$
+
+We will now write each in its polynomial from
+
+$$
+255 = x^7 + x^6 + x^5 + x^4 + x^3 + x^2 + x + 1 
+$$
+
+$$
+3 = x + 1 
+$$
+
+We can now calculate this with polynomial multiplication 
+
+$$
+(x^7+x^6+x^5+x^5+x^4+x^3+x^2+x+1)(x+1) = x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+x^7+x^6+x^5+x^4+x^3+x^2+x^1+1 
+$$
+
+We can now rearange this and use the fact that $ x^n \oplus x^n = 0 $
+
+$$
+x^8 \oplus (x^7\oplus x^7) +(x^6\oplus x^6)+(x^5\oplus x^5)+(x^4\oplus x^4)+(x^3\oplus x^3)+(x^2\oplus x^2)+(x^1\oplus x^1) + 1
+$$
+
+Thus giving us
+
+$$
+x^8 + 1
+$$
+
+But this does not belong to the field $ GF(2^8) $ so we must reduce modulo the polynomial 
+
+$$
+x^8+x^4+x^3+x^1+1 
+$$
+
+we can use the fact that 
+
+$$ x^8 \equiv x^4 + x^3 + x^1 + 1\space(mod x^8+x^4+x^3+x^1) $$
+
+to rewrite our result giving us
+
+$$ x^4 + x^3 +x^1 + 1 + 1 $$
+
+then simplifying using additivng property to give us
+
+$$ 
+x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x
+$$
+
+This is equivilant to 
+
+$$
+0b00011010 = is 2 + 8 + 16 = 26
+$$
+
+thus giving us the following result
+
+$ 255 \cdot 3 = 26 $ in $ GF(2^8) $
+
+Note: that $ \oplus $ and + are interchangeable
