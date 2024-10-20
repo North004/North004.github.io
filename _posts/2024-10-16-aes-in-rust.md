@@ -227,6 +227,12 @@ b_2 \\
 b_3 \\
 \end{bmatrix}\right)
 =
+\begin{bmatrix}
+2 & 3 & 1 & 1 \\
+1 & 2 & 3 & 1 \\
+1 & 1 & 2 & 3 \\
+3 & 1 & 1 & 2 \\
+\end{bmatrix}
 \begin{bmatrix} 
 b’_0 \\
 b‘_1 \\
