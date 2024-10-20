@@ -183,7 +183,9 @@ before we cover ths transformation we first have to look at the galios field $ G
 
   $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $
 
-10. This is equivilant to 00011010 in binary and 26 in denary:
+10. 
+
+  This is equivilant to `00011010` in binary and 26 in denary:
 
 11. thus giving us the following result:
 
