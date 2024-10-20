@@ -167,8 +167,8 @@ and transforms it by multiplying it with another matrix in the finite field $$ G
   * Addition in $ GF(2^8) $ is defined as bitwise XOR between two bytes as $ a \oplus b $
   * Multiplication in $ GF(2^8) $ involves standard polynomial multiplication followed by a reduction moduolo an irreducible polynomial of degree 8 one such polynomial is $ x^8 + x^4 + x^3 +x + 1 $
 
-#### Below we will show an example
-we will now show an example multiplying numbers 255 and 3 in the finite field $ GF(2^8) $
+#### Below is an example
+we will now show the multiplicstion of 255 and 3 in $ GF(2^8) $
 
 $$
 255 \oplus 3  
@@ -193,7 +193,7 @@ $$
 We can now rearange this and use the fact that $ x^n \oplus x^n = 0 $
 
 $$
-x^8 \oplus (x^7\oplus x^7) +(x^6\oplus x^6)+(x^5\oplus x^5)+(x^4\oplus x^4)+(x^3\oplus x^3)+(x^2\oplus x^2)+(x^1\oplus x^1) + 1
+x^8 + (x^7\oplus x^7) +(x^6\oplus x^6)+(x^5\oplus x^5)+(x^4\oplus x^4)+(x^3\oplus x^3)+(x^2\oplus x^2)+(x^1\oplus x^1) + 1
 $$
 
 Thus giving us
@@ -222,14 +222,12 @@ $$
 x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x
 $$
 
-This is equivilant to 
-
-$$
-0b00011010 = is 2 + 8 + 16 = 26
-$$
+This is equivilant to 0b00011010  which is 26
 
 thus giving us the following result
 
 $ 255 \cdot 3 = 26 $ in $ GF(2^8) $
 
-Note: that $ \oplus $ and + are interchangeable
+> The operators + and $ \oplus $ are interchangable ans used only to clarify when XOR is being used
+{: .prompt-info }
+
