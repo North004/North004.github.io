@@ -142,10 +142,10 @@ which changes it in place
 # Mix Cols
 The **mix cols** operation can be represented as another linear transformation that is applied to each column $$ P $$ which maps a $$ 4 \times 1 $$ matrix as follows:
 
-$$ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $$
+$ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $
 
 Where:
-- $$ \mathbb{B} $$ is the set of bytes  $$ \mathbb{B} = \{0,1\}^8 $$.
+- $ \mathbb{B} $$ is the set of bytes  $$ \mathbb{B} = \{0,1\}^8 $
 
 The map $ P $ takes a matrix:
 
@@ -195,7 +195,7 @@ $ x^8+x^4+x^3+x^1+1 $
 
 we can use the fact that 
 
-$ x^8 \equiv x^4 + x^3 + x^1 + 1\space(mod x^8+x^4+x^3+x^1) $
+$ x^8 \equiv x^4 + x^3 + x^1 + 1\space(mod \space x^8+x^4+x^3+x^1) $
 
 to rewrite our result giving us
 
@@ -205,7 +205,7 @@ then simplifying using additivng property to give us
 
 $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $
 
-This is equivilant to $ 0b00011010 $ which is $ 26 $
+This is equivilant to 00011010 in binary and 26 in denary
 
 thus giving us the following result
 
