@@ -76,13 +76,32 @@ the **shift rows** operation can be represented as a map $$ M $$, which transfor
 $$
 M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4}
 $$
-
+Where:
+- \( \mathbb{B} \) is the set of bytes (\( \mathbb{B} = \{0,1\}^8 \)).
+The map M takes a matrix:
 $$ 
 \text{Matrix} = \begin{bmatrix} 
 b_0 & b_1 & b_2 & b_3 \\
 b_4 & b_5 & b_6 & b_7 \\
 b_8 & b_9 & b_{10} & b_{11} \\
 b_{12} & b_{13} & b_{14} & b_{15}
+\end{bmatrix}
+$$
+and transforms it cyclicly by shifting the rows
+the resulting matrix is
+$$
+M\left(\begin{bmatrix} 
+b_0 & b_1 & b_2 & b_3 \\
+b_4 & b_5 & b_6 & b_7 \\
+b_8 & b_9 & b_{10} & b_{11} \\
+b_{12} & b_{13} & b_{14} & b_{15}
+\end{bmatrix}\right)
+=
+\begin{bmatrix} 
+b_0 & b_1 & b_2 & b_3 \\
+b_5 & b_6 & b_7 & b_4 \\
+b_{10} & b_{11} & b_8 & b_9 \\
+b_{15} & b_{12} & b_{13} & b_{14}
 \end{bmatrix}
 $$
 
