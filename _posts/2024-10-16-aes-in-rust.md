@@ -73,11 +73,10 @@ fn sub_bytes(state: &mut [u8;16]) {
 }
 ```
 
-# Shift Rows
+## Shift Rows
 the **shift rows** operation can be represented as a map $$ M $$, which transforms a $$ 4 \times 4 $$ matrix as follows:
-$$
-M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4}
-$$
+
+$ M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4} $
 
 Where:
 - $$ \mathbb{B} $$ is the set of bytes  $$ \mathbb{B} = \{0,1\}^8 $$.
@@ -139,7 +138,7 @@ fn shift_rows(state: &mut [u8; 16]) {
 this works by passing a mutable referance the block in its current state and creating a temporary copy where the values can be read from and assigned to the state
 which changes it in place
 
-# Mix Cols
+## Mix Cols
 The **mix cols** operation can be represented as another linear transformation that is applied to each column $$ P $$ which maps a $$ 4 \times 1 $$ matrix as follows:
 
 $ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $
