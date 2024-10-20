@@ -217,29 +217,15 @@ $ 255 \cdot 3 = 26 $ in $ GF(2^8) $
 {: .prompt-info }
 
 ### Back to Transformation
-now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation $ P $ 
-which maps a 4*1 matrix to another 4*1 matrix and is defined below
-
+now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1}
+where $ P(c_i) = Mc_i $ where i is the column index and M is defined as follows
 $$
-P\left(\begin{bmatrix} 
-b_0 \\
-b_1 \\
-b_2 \\
-b_3 \\
-\end{bmatrix}\right)
-=
-\begin{bmatrix}
+M = \begin{pmatrix}
 2 & 3 & 1 & 1 \\
 1 & 2 & 3 & 1 \\
 1 & 1 & 2 & 3 \\
-3 & 1 & 1 & 2 \\
-\end{bmatrix}
-\begin{bmatrix} 
-b’_0 \\
-b‘_1 \\
-b‘_2 \\
-b‘_3 \\
-\end{bmatrix}\right)
+3 & 1 & 1 & 2
+\end{pmatrix}
 $$
 
 
