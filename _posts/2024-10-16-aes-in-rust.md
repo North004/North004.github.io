@@ -74,13 +74,9 @@ fn sub_bytes(state: &mut [u8;16]) {
 ```
 
 ## Shift Rows
-the **shift rows** operation can be represented as a map $$ M $$, which transforms a $$ 4 \times 4 $$ matrix as follows:
-
-$ M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4} $
-
-Where:
+the **shift rows** operation can be represented as a map $$ M $$, which transforms a $$ 4 \times 4 $$ matrix, where:
+- $ M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4} $
 - $$ \mathbb{B} $$ is the set of bytes  $$ \mathbb{B} = \{0,1\}^8 $$.
-
 The map M takes a matrix:
 
 $$ 
@@ -92,7 +88,7 @@ b_3 & b_7 & b_{11} & b_{15}
 \end{bmatrix}
 $$
 
-and transforms it cyclicly by shifting the rows, this is shown below
+and transforms it cyclicly by shifting the ith rows i places to the left, this is shown below:
 
 $$
 M\left(\begin{bmatrix} 
@@ -112,7 +108,6 @@ $$
 
 this helps increase the complexity of the cipher by ensuring the influence of each byte is spread across multiple columns
 this combined with the function mix_cols which will be covered later helps contribute to the diffusion of the cipher
-
 below i have written this transformation in rust
 ```rust
 fn shift_rows(state: &mut [u8; 16]) {
@@ -139,25 +134,8 @@ this works by passing a mutable referance the block in its current state and cre
 which changes it in place
 
 ## Mix Cols
-The **mix cols** operation can be represented as another linear transformation that is applied to each column $$ P $$ which maps a $$ 4 \times 1 $$ matrix as follows:
-
-$ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $
-
-Where:
-- $ \mathbb{B} $ is the set of bytes $ \mathbb{B} = \{0,1\}^8 $
-
-The map $ P $ takes a matrix:
-
-$$ 
-\begin{bmatrix} 
-b_0 \\
-b_1 \\
-b_2 \\
-b_3
-\end{bmatrix}
-$$
-
-and transforms it by multiplying it with another matrix in the finite field $$ GF(2^8) $$ before we show how this function works we will first cover this field
+The **mix cols** operation can be represented as linear transformation $ P $ in the finite field $ GF(2^8) $ that transforms each column in the block
+before we cover ths transformation we first have to look at the galios field $ GF(2^8) $
 
 ### $ GF(2^8) $ Galios Field
 - $ GF(2^8) $ is a finite field with $ 2^8 $ elements 
