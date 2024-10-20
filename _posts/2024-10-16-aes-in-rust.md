@@ -227,6 +227,27 @@ M = \begin{pmatrix}
 \end{pmatrix}
 $$
 
+below i have written this operation in rust
+```rust
+fn mix_cols(state: &mut [u8; 16]) {
+    let temp = *state;
+    for col in 0..4 {
+        let offset = col * 4;
+        let s = [
+            temp[offset],
+            temp[offset + 1],
+            temp[offset + 2],
+            temp[offset + 3],
+        ];
+
+        state[offset] = gal_mul(s[0], 0x02) ^ gal_mul(s[1], 0x03) ^ s[2] ^ s[3];
+        state[offset + 1] = s[0] ^ gal_mul(s[1], 0x02) ^ gal_mul(s[2], 0x03) ^ s[3];
+        state[offset + 2] = s[0] ^ s[1] ^ gal_mul(s[2], 0x02) ^ gal_mul(s[3], 0x03);
+        state[offset + 3] = gal_mul(s[0], 0x03) ^ s[1] ^ s[2] ^ gal_mul(s[3], 0x02);
+    }
+}
+
+```
 
 
 
