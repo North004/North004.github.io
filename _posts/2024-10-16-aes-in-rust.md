@@ -72,38 +72,71 @@ fn sub_bytes(state: &mut [u8;16]) {
 ```
 
 # Shift Rows
-the **shift rows** operation can be represented as a map $$ M $$, which transforms a 4*4 matrix as follows:
+the **shift rows** operation can be represented as a map $$ M $$, which transforms a $$ 4 * 4 $$ matrix as follows:
 $$
 M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4}
 $$
+
 Where:
-- \( \mathbb{B} \) is the set of bytes (\( \mathbb{B} = \{0,1\}^8 \)).
+- $$ \mathbb{B} $$ is the set of bytes  $$ \mathbb{B} = \{0,1\}^8 $$.
+
 The map M takes a matrix:
+
 $$ 
-\text{Matrix} = \begin{bmatrix} 
-b_0 & b_1 & b_2 & b_3 \\
-b_4 & b_5 & b_6 & b_7 \\
-b_8 & b_9 & b_{10} & b_{11} \\
-b_{12} & b_{13} & b_{14} & b_{15}
+\begin{bmatrix} 
+b_0 & b_4 & b_8 & b_{12} \\
+b_1 & b_5 & b_9 & b_{13} \\
+b_2 & b_6 & b_{10} & b_{14} \\
+b_3 & b_7 & b_{11} & b_{15}
 \end{bmatrix}
 $$
-and transforms it cyclicly by shifting the rows
-the resulting matrix is:
+
+and transforms it cyclicly by shifting the rows, this is shown below
+
 $$
 M\left(\begin{bmatrix} 
-b_0 & b_1 & b_2 & b_3 \\
-b_4 & b_5 & b_6 & b_7 \\
-b_8 & b_9 & b_{10} & b_{11} \\
-b_{12} & b_{13} & b_{14} & b_{15}
+b_0 & b_4 & b_8 & b_{12} \\
+b_1 & b_5 & b_9 & b_{13} \\
+b_2 & b_6 & b_{10} & b_{14} \\
+b_3 & b_7 & b_{11} & b_{15}
 \end{bmatrix}\right)
 =
 \begin{bmatrix} 
-b_0 & b_1 & b_2 & b_3 \\
-b_5 & b_6 & b_7 & b_4 \\
-b_{10} & b_{11} & b_8 & b_9 \\
-b_{15} & b_{12} & b_{13} & b_{14}
+b_0 & b_4 & b_8 & b_{12} \\
+b_5 & b_9 & b_{13} & b_1 \\
+b_{10} & b_{14} & b_2 & b_6 \\
+b_{15} & b_3 & b_7 & b_{11}
 \end{bmatrix}
 $$
 
+this helps increase the complexity of the cipher by ensuring the influence of each byte is spread across multiple columns
+this combined with the function mix_cols which will be covered later helps contribute to the diffusion of the cipher
 
+below i have written this transformation in rust
+```rust
+fn shift_rows(state: &mut [u8; 16]) {
+    let temp = *state;
+    state[0] = temp[0];
+    state[1] = temp[5];
+    state[2] = temp[10];
+    state[3] = temp[15];
+    state[4] = temp[4];
+    state[5] = temp[9];
+    state[6] = temp[14];
+    state[7] = temp[3];
+    state[8] = temp[8];
+    state[9] = temp[13];
+    state[10] = temp[2];
+    state[11] = temp[7];
+    state[12] = temp[12];
+    state[13] = temp[1];
+    state[14] = temp[6];
+    state[15] = temp[11];
+}
+```
+this works by passing a mutable referance the block in its current state and creating a temporary copy where the values can be read from and assigned to the state
+which changes it in place
+
+# Mix Cols
+The **mix cols** operation can be represented as another linear transformation $$ P $$ which again maps a $$ 4*4 $$ matrix as follows
 
