@@ -136,46 +136,40 @@ before we cover ths transformation we first have to understsnd galios fields $ G
 ### Example in $ GF(2^8) $
 1. **Problem Setup**:  
   We will now show the multiplication of 255 by 3 in $GF(2^8)$:  
-  $255 \cdot 3$  
+  $255 \times 3$  
 
 2. **Polynomial Form**:  
    We will now write each in its polynomial from:  
    $255 = x^7 + x^6 + x^5 + x^4 + x^3 + x^2 + x + 1$  
    $3 = x + 1$  
 
-We can now calculate this with polynomial multiplication:
+3. **Polynomial Multiplication**:  
+   We will now multiply both polynomias together:  
+   $ (x^7+x^6+x^5+x^5+x^4+x^3+x^2+x+1)(x+1) = x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+x^7+x^6+x^5+x^4+x^3+x^2+x^1+1 $  
 
-$ (x^7+x^6+x^5+x^5+x^4+x^3+x^2+x+1)(x+1) = x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+x^7+x^6+x^5+x^4+x^3+x^2+x^1+1 $
+4. **Simplification**:  
+   We can now rearange this and use the fact that $ x^n \oplus x^n = 0 $:  
+   $x^8 + (x^7\oplus x^7) +(x^6\oplus x^6)+(x^5\oplus x^5)+(x^4\oplus x^4)+(x^3\oplus x^3)+(x^2\oplus x^2)+(x^1\oplus x^1) + 1$  
+   This will give us the following: 
+   $ x^8 + 1 $  
 
-We can now rearange this and use the fact that $ x^n \oplus x^n = 0 $:
+5. **Modulo Reduction**:  
+   But this does not belong inthe field $ GF(2^8) $ so we must reduce modulo the polynomial:  
+   $ x^8+x^4+x^3+x^1+1 $  
+   We can use the following equivilance to reduce the polynomial:  
+   $ x^8 \equiv x^4 + x^3 + x^1 + 1\space(mod \space x^8+x^4+x^3+x^1) $  
 
-$ x^8 + (x^7\oplus x^7) +(x^6\oplus x^6)+(x^5\oplus x^5)+(x^4\oplus x^4)+(x^3\oplus x^3)+(x^2\oplus x^2)+(x^1\oplus x^1) + 1 $
 
-Thus giving us:
+6. **Simplification**: 
+   This is the reduced polynomial:  
+   $ x^4 + x^3 +x^1 + 1 + 1 $
+   We can now simplify it using additive property of the field:
+   $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $  
 
-$ x^8 + 1 $
-
-But this does not belong to the field $ GF(2^8) $ so we must reduce modulo the polynomial:
-
-$ x^8+x^4+x^3+x^1+1 $
-
-We can use the fact that: 
-
-$ x^8 \equiv x^4 + x^3 + x^1 + 1\space(mod \space x^8+x^4+x^3+x^1) $
-
-To rewrite our result giving us:
-
-$ x^4 + x^3 +x^1 + 1 + 1 $
-
-Then simplifying using additivng property to give us:
-
-$ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $
-
-This is equivilant to `00011010` in binary and 26 in denary:
-
-Thus giving us the following result:
-
-$ 255 \cdot 3 = 26 $ in $ GF(2^8) $
+7. **Converting**:  
+   Converting back to binary gives us `00011010` and in densry `26`:  
+   Thus giving us the following result:  
+   $ 255 \times 3 = 26 $ in $ GF(2^8) $  
 
 > The operators + and $ \oplus $ are interchangable ans used only to clarify when XOR is being used
 {: .prompt-info }
