@@ -188,7 +188,7 @@ M = \begin{pmatrix}
 \end{pmatrix}
 $$
 
-below i have written this operation in rust
+below i have written this operation in rust.
 ```rust
 fn mix_cols(state: &mut [u8; 16]) {
     let temp = *state;
