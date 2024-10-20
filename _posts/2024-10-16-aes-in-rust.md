@@ -168,7 +168,7 @@ and transforms it by multiplying it with another matrix in the finite field $$ G
 ### Example in $ GF(2^8) $
 we will now show the multiplication of 255 by 3 in $ GF(2^8) $
 
-$ 255 \oplus 3  $
+$ 255 \cdot 3  $
 
 We will now write each in its polynomial from
 
