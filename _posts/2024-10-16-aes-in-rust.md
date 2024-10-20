@@ -144,7 +144,7 @@ The **mix cols** operation can be represented as another linear transformation t
 $ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $
 
 Where:
-- $ \mathbb{B} $$ is the set of bytes  $$ \mathbb{B} = \{0,1\}^8 $
+- $ \mathbb{B} $ is the set of bytes $ \mathbb{B} = \{0,1\}^8 $
 
 The map $ P $ takes a matrix:
 
