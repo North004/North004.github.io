@@ -17,8 +17,7 @@ AES is being used by most militaries around the world and for most encryption ne
 
 ## Project Goal
 In this tutorial we will be implementing 128 Bit AES
-> Do not use this or any other untested encryption in production you should only use libraries that have had security audits
-one such crate is [Aes-Gcm](https://crates.io/crates/aes-gcm)
+> Do not use any unaudited encryption in production for a secure and tested alternative use [Aes-Gcm](https://crates.io/crates/aes-gcm)
 {: .prompt-danger }
 
 ## Overview 
@@ -165,7 +164,6 @@ and transforms it by multiplying it with another matrix in the finite field $$ G
 ### $ GF(2^8) $ Galios Field
 - $ GF(2^8) $ is a finite field with $ 2^8 $ elements 
 - The elements of this field are 8 bit numbers (bytes) represented as binary polynomials
-  $$ 0b00000011 = 0x^7 + ... + 0x^3 + 0x^2 + 1x^1 + 1x^0 = x + 1 $$
 - Operations:
   * Addition in $ GF(2^8) $ is defined as bitwise XOR between two bytes as $ a \oplus b $
   * Multiplication in $ GF(2^8) $ involves standard polynomial multiplication followed by a reduction moduolo an irreducible polynomial of degree 8 one such polynomial is $ x^8 + x^4 + x^3 +x + 1 $
