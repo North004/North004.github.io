@@ -167,7 +167,7 @@ before we cover ths transformation we first have to understsnd galios fields $ G
    $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $  
 
 7. **Converting**:  
-   Converting back to binary gives us `00011010` and in densry `26`:  
+   Converting  to binary gives us `00011010` and in densry `26`:  
    Thus giving us the following result:  
    $ 255 \times 3 = 26 $ in $ GF(2^8) $  
 
@@ -175,7 +175,7 @@ before we cover ths transformation we first have to understsnd galios fields $ G
 {: .prompt-info }
 
 ### Now onto the transformation
-Now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation:
+Now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation $ P $ which is defined below:
 * $ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $.
 * $ P(c_i) = Mc_i $ ,where i is the column index.
 
