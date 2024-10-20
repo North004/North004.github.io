@@ -136,13 +136,12 @@ before we cover ths transformation we first have to understsnd galios fields $ G
 ### Example in $ GF(2^8) $
 1. **Problem Setup**:  
   We will now show the multiplication of 255 by 3 in $GF(2^8)$:  
-  $255 \cdot 3$
+  $255 \cdot 3$  
 
 2. **Polynomial Form**:  
    We will now write each in its polynomial from:  
-   $255 = x^7 + x^6 + x^5 + x^4 + x^3 + x^2 + x + 1$
-
-$ 3 = x + 1 $
+   $255 = x^7 + x^6 + x^5 + x^4 + x^3 + x^2 + x + 1$  
+   $3 = x + 1$  
 
 We can now calculate this with polynomial multiplication:
 
