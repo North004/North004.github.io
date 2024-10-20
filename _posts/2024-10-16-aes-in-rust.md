@@ -88,7 +88,7 @@ b_{12} & b_{13} & b_{14} & b_{15}
 \end{bmatrix}
 $$
 and transforms it cyclicly by shifting the rows
-the resulting matrix is
+the resulting matrix is:
 $$
 M\left(\begin{bmatrix} 
 b_0 & b_1 & b_2 & b_3 \\
