@@ -64,7 +64,7 @@ const SBOX: [u8; 256] = [
     0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf,
     0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb,0x16]
 ```
-here is the rust code which mutably iterates over the block substituting each byte for the corrosponding output value defined by the sbox
+here is the rust code which mutably iterates over the block substituting each byte for the corrosponding output value defined by the sbox.
 ```rust
 fn sub_bytes(state: &mut [u8;16]) {
     for byte in state.iter_mut() {
@@ -76,19 +76,9 @@ fn sub_bytes(state: &mut [u8;16]) {
 ## Shift Rows
 the **shift rows** operation can be represented as a map $$ M $$, which transforms a $$ 4 \times 4 $$ matrix, defined below:
 - $ M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4} $
-- $$ \mathbb{B} $$ is the set of bytes  $$ \mathbb{B} = \{0,1\}^8 $$.
-The map M takes a matrix:
+- $ \mathbb{B} $ is the set of bytes  $ \mathbb{B} = \{0,1\}^8 $.
 
-$$ 
-\begin{bmatrix} 
-b_0 & b_4 & b_8 & b_{12} \\
-b_1 & b_5 & b_9 & b_{13} \\
-b_2 & b_6 & b_{10} & b_{14} \\
-b_3 & b_7 & b_{11} & b_{15}
-\end{bmatrix}
-$$
-
-and transforms it cyclicly by shifting the ith rows i places to the left, this is shown below:
+The map M takes a matrix, and transforms it cyclicly by shifting the ith rows i places to the left, this is shown below.
 
 $$
 M\left(\begin{bmatrix} 
@@ -108,7 +98,7 @@ $$
 
 this helps increase the complexity of the cipher by ensuring the influence of each byte is spread across multiple columns
 this combined with the function mix_cols which will be covered later helps contribute to the diffusion of the cipher
-below i have written this transformation in rust
+below i have written this transformation in rust.
 ```rust
 fn shift_rows(state: &mut [u8; 16]) {
     let temp = *state;
@@ -131,71 +121,70 @@ fn shift_rows(state: &mut [u8; 16]) {
 }
 ```
 this works by passing a mutable referance the block in its current state and creating a temporary copy where the values can be read from and assigned to the state
-which changes it in place
+which changes it in place.
 
 ## Mix Cols
 The **mix cols** operation can be represented as linear transformation $ P $ in the finite field $ GF(2^8) $ that transforms each column in the block
-before we cover ths transformation we first have to look at the galios field $ GF(2^8) $
+before we cover ths transformation we first have to understsnd galios fields $ GF(2^8) $.
 
 ### $ GF(2^8) $ Galios Field
-- $ GF(2^8) $ is a finite field with $ 2^8 $ elements 
-- The elements of this field are 8 bit numbers (bytes) represented as binary polynomials
-- Addition in $ GF(2^8) $ is defined as bitwise XOR between two bytes as $ a \oplus b $
-- Multiplication in $ GF(2^8) $ involves standard polynomial multiplication followed by a reduction moduolo an irreducible polynomial of degree 8 one such polynomial is $ x^8 + x^4 + x^3 +x + 1 $
+- $ GF(2^8) $ is a finite field with $ 2^8 $ elements.
+- The elements of this field are 8 bit numbers (bytes) represented as binary polynomials.
+- Addition in $ GF(2^8) $ is defined as bitwise XOR between two bytes as $ a \oplus b $.
+- Multiplication in $ GF(2^8) $ involves standard polynomial multiplication followed by a reduction moduolo an irreducible polynomial of degree 8 one such polynomial is $ x^8 + x^4 + x^3 +x + 1 $.
 
 ### Example in $ GF(2^8) $
+We will now show $ 255 \times 3 $ in $ GF(2^8) $:
 
-We will now show the multiplication of 255 by 3 in $ GF(2^8) $:
 $ 255 \cdot 3  $
 
 We will now write each in its polynomial from:
+
 $ 255 = x^7 + x^6 + x^5 + x^4 + x^3 + x^2 + x + 1 $
 
-  $ 3 = x + 1 $
+$ 3 = x + 1 $
 
-3. We can now calculate this with polynomial multiplication:
+We can now calculate this with polynomial multiplication:
 
-  $ (x^7+x^6+x^5+x^5+x^4+x^3+x^2+x+1)(x+1) = x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+x^7+x^6+x^5+x^4+x^3+x^2+x^1+1 $
+$ (x^7+x^6+x^5+x^5+x^4+x^3+x^2+x+1)(x+1) = x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+x^7+x^6+x^5+x^4+x^3+x^2+x^1+1 $
 
-4. We can now rearange this and use the fact that $ x^n \oplus x^n = 0 $:
+We can now rearange this and use the fact that $ x^n \oplus x^n = 0 $:
 
-  $ x^8 + (x^7\oplus x^7) +(x^6\oplus x^6)+(x^5\oplus x^5)+(x^4\oplus x^4)+(x^3\oplus x^3)+(x^2\oplus x^2)+(x^1\oplus x^1) + 1 $
+$ x^8 + (x^7\oplus x^7) +(x^6\oplus x^6)+(x^5\oplus x^5)+(x^4\oplus x^4)+(x^3\oplus x^3)+(x^2\oplus x^2)+(x^1\oplus x^1) + 1 $
 
-5. Thus giving us:
+Thus giving us:
 
-  $ x^8 + 1 $
+$ x^8 + 1 $
 
-6. But this does not belong to the field $ GF(2^8) $ so we must reduce modulo the polynomial:
+But this does not belong to the field $ GF(2^8) $ so we must reduce modulo the polynomial:
 
-  $ x^8+x^4+x^3+x^1+1 $
+$ x^8+x^4+x^3+x^1+1 $
 
-7. we can use the fact that: 
+We can use the fact that: 
 
-  $ x^8 \equiv x^4 + x^3 + x^1 + 1\space(mod \space x^8+x^4+x^3+x^1) $
+$ x^8 \equiv x^4 + x^3 + x^1 + 1\space(mod \space x^8+x^4+x^3+x^1) $
 
-8. to rewrite our result giving us:
+To rewrite our result giving us:
 
-  $ x^4 + x^3 +x^1 + 1 + 1 $
+$ x^4 + x^3 +x^1 + 1 + 1 $
 
-9. then simplifying using additivng property to give us:
+Then simplifying using additivng property to give us:
 
-  $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $
+$ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $
 
-10. 
+This is equivilant to `00011010` in binary and 26 in denary:
 
-  This is equivilant to `00011010` in binary and 26 in denary:
+Thus giving us the following result:
 
-11. thus giving us the following result:
-
-  $ 255 \cdot 3 = 26 $ in $ GF(2^8) $
+$ 255 \cdot 3 = 26 $ in $ GF(2^8) $
 
 > The operators + and $ \oplus $ are interchangable ans used only to clarify when XOR is being used
 {: .prompt-info }
 
 ### Now onto the transformation
-now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation 
-$$ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $$
-where $ P(c_i) = Mc_i $  where i is the column index and M is defined as follows:
+Now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation:
+* $ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $.
+* $ P(c_i) = Mc_i $  where i is the column index and M is defined as follows.
 
 $$
 M = \begin{pmatrix}
@@ -225,7 +214,6 @@ fn mix_cols(state: &mut [u8; 16]) {
         state[offset + 3] = gal_mul(s[0], 0x03) ^ s[1] ^ s[2] ^ gal_mul(s[3], 0x02);
     }
 }
-
 ```
 
 
