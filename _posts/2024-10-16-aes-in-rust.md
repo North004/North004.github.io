@@ -162,7 +162,7 @@ before we cover ths transformation we first have to understsnd galios fields $ G
 
 6. **Simplification**: 
    This is the reduced polynomial:  
-   $ x^4 + x^3 +x^1 + 1 + 1 $
+   $ x^4 + x^3 +x^1 + 1 + 1 $  
    We can now simplify it using additive property of the field:  
    $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $  
 
