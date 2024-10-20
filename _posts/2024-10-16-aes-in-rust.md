@@ -184,7 +184,7 @@ $ 255 \cdot 3 = 26 $ in $ GF(2^8) $
 ### Now onto the transformation
 Now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation:
 * $ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $.
-* $ P(c_i) = Mc_i $  where i is the column index and M is defined as follows.
+* $ P(c_i) = Mc_i $ ,where i is the column index.
 
 $$
 M = \begin{pmatrix}
