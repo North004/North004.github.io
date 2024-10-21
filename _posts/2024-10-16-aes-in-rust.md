@@ -218,7 +218,7 @@ fn gal_mul(mut a: u8, mut b: u8) -> u8 {
    2. $ a(x) = x^4 + x^3 $,  $ b(x) = x + 1 $,   $ r = x^3+x^2 $   
    3. $ a(x) = x^5+ x^4 $,  $ b(x) = 1 $,   $ r = x^3 + x^2 + x^4 + x^3 $   
    4. $ a(x) = x^6+x^5 $,  $ b(x) = 0 $,   $ r = x^3 + x^2 + x^4 + x^3 + x^5 + x^4 $  
-   5. $ b(x) = 0 $ so $ r $ is returned $ r = x^3 + x^2 + x^4 + x^3 +x^5 + x^4 = x^5 + (x^4 \oplus x^4) + (x^3 \oplus x^3) + x^2 = x^5 + 0 + 0 + x^2 = x^5 + x^2 $ We can verify this result using this calculator [GF(2^8) Calculator](http://www.ee.unb.ca/cgi-bin/tervo/calc2.pl?num=1+1+0+0&den=0+1+1+0&f=m&p=36&y=1)  
+   5. $ b(x) = 0 $ so $ r $ is returned $ r = x^3 + x^2 + x^4 + x^3 +x^5 + x^4 = x^5 + (x^4 \oplus x^4) + (x^3 \oplus x^3) + x^2 = x^5 + 0 + 0 + x^2 = x^5 + x^2 $ 
 
 
 ### Now onto the transformation
