@@ -131,7 +131,9 @@ before we cover ths transformation we first have to understsnd galios fields $ G
 - $ GF(2^8) $ is a finite field with $ 2^8 $ elements.
 - The elements of this field are 8 bit numbers (bytes) represented as binary polynomials.
 - Addition in $ GF(2^8) $ is defined as bitwise XOR between two bytes as $ a \oplus b $.
-- Multiplication in $ GF(2^8) $ involves standard polynomial multiplication followed by a reduction moduolo an irreducible polynomial of degree 8 one such polynomial is $ x^8 + x^4 + x^3 +x + 1 $.
+- Multiplication in $ GF(2^8) $ involves standard polynomial multiplication followed by a reduction moduolo an irreducible polynomial of degree 8 one such polynomial is $ x^8 + x^4 + x^3 +x + 1 $
+- Relation between binary form and polynomial form:  
+  $ b_7b_6b_5b_4b_3b_2b_1b_0 = b_7x^7 + b_6x^6 + b_5x^5 + b_4x^4 + b_3x^3 + b_2x^2 + b_1x + b_0 $  
 
 ### Example in $ GF(2^8) $
 1. **Problem Setup**:  
@@ -202,36 +204,46 @@ fn gal_mul(mut a: u8, mut b: u8) -> u8 {
 }
 ```
 ### Explaination of Gal_Mul
-1. **Idea Behind Function**:
+- **Idea Behind Function**:  
    The above function factors out x from the polynomial b(x) and multiplies it to a(x) this doesnt effect the result as:  
-   $ xa(x) \cdot x^{-1}b(x) is still a(x)b(x) $  
+   $ xa(x) \cdot x^{-1}b(x) $ is still $ a(x)b(x) $  
    so now $ a(x) = xa(x) $ and $ b(x) = x^{-1}b(x)  
    If a(x) ever exceeds degree 8 it is reduced modulo the polynomial `0x1b` i.e the reduction polynomial we looked at before  
    This repeats until b(x) is no longer divisible by x which implies the coefficiant of the of the polynomials constant term is 1  
    at this stage we can then add a(x) to the result and remove the 1 by performing a right shift on b(x)  
    once b = 0 the result will return.
 
-2. **Code Trade**:  
-  Initial: $ a(x) = x^3+x^2 $  $ b(x) = x^2 + x $ and $ r = 0 $  
-  Loop 1: $ a(x) = x^4 + x^3 $  $ b(x) = x + 1 $ and $ r = x^3+x^2 $  
-  Loop 2: $ a(x) = x^5+ x^4 $  $ b(x) = 1 $ and $ r = x^3 + x^2 + x^4 + x^3 $  
-  Loop 3: $ a(x) = x^6+x^5 $  $ b(x) = 0 $ and $ r = x^3 + x^2 + x^4 + x^3 + x^5 + x^4 $  
-  Since b is now equal to 0 the while loop terminates and r is returned:  
-  $ r = x^3 + x^2 + x^4 + x^3 +x^5 + x^4 = x^5 + (x^4 \oplus x^4) + (x^3 \oplus x^3) + x^2 = x^5 + 0 + 0 + x^2 = x^5 + x^2 $  
-  We can verify this using a tool like this [GF(2^8) Calculator](http://www.ee.unb.ca/cgi-bin/tervo/calc2.pl?num=1+1+0+0&den=0+1+1+0&f=m&p=36&y=1)  
+- **Code Trace**:  
+   1. $ a(x) = x^3+x^2 $  $ b(x) = x^2 + x $ and $ r = 0 $  
+   2. $ a(x) = x^4 + x^3 $  $ b(x) = x + 1 $ and $ r = x^3+x^2 $   
+   3. $ a(x) = x^5+ x^4 $  $ b(x) = 1 $ and $ r = x^3 + x^2 + x^4 + x^3 $   
+   4. $ a(x) = x^6+x^5 $  $ b(x) = 0 $ and $ r = x^3 + x^2 + x^4 + x^3 + x^5 + x^4 $  
+   5. Since b is now equal to 0 the while loop terminates and r is returned:  
+     $ r = x^3 + x^2 + x^4 + x^3 +x^5 + x^4 = x^5 + (x^4 \oplus x^4) + (x^3 \oplus x^3) + x^2 = x^5 + 0 + 0 + x^2 = x^5 + x^2 $  
+     We can verify this using a tool like this [GF(2^8) Calculator](http://www.ee.unb.ca/cgi-bin/tervo/calc2.pl?num=1+1+0+0&den=0+1+1+0&f=m&p=36&y=1)  
+
 
 ### Now onto the transformation
 Now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation $ P $ which is defined below:
 * $ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $.
-* $ P(c_i) = Mc_i $ ,where i is the column index.
+* $ P(c_i) = M \cdot c_i \space \space $  where $ i $ is column index and M is:
 
 $$
-M = \begin{pmatrix}
+M = \begin{bmatrix}
 2 & 3 & 1 & 1 \\
 1 & 2 & 3 & 1 \\
 1 & 1 & 2 & 3 \\
 3 & 1 & 1 & 2
-\end{pmatrix}
+\end{bmatrix}
+$$
+
+$$
+\mathbf{c_i'} = \begin{bmatrix} 
+(02 \cdot b_0) \oplus (03 \cdot b_1) \oplus (01 \cdot b_2) \oplus (01 \cdot b_3) \\ 
+(01 \cdot b_0) \oplus (02 \cdot b_1) \oplus (03 \cdot b_2) \oplus (01 \cdot b_3) \\ 
+(01 \cdot b_0) \oplus (01 \cdot b_1) \oplus (02 \cdot b_2) \oplus (03 \cdot b_3) \\ 
+(03 \cdot b_0) \oplus (01 \cdot b_1) \oplus (01 \cdot b_2) \oplus (02 \cdot b_3) 
+\end{bmatrix}
 $$
 
 below i have written this operation in rust.
