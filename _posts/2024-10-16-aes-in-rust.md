@@ -220,8 +220,7 @@ fn gal_mul(mut a: u8, mut b: u8) -> u8 {
   $ r = x^3 + x^2 + x^4 + x^3 +x^5 + x^4 = x^5 + (x^4 \oplus x^4) + (x^3 \oplus x^3) + x^2 = x^5 + 0 + 0 + x^2 = x^5 + x^2 $  
   We can verify this using a tool like this [GF(2^8) Calculator](http://www.ee.unb.ca/cgi-bin/tervo/calc2.pl?num=1+1+0+0&den=0+1+1+0&f=m&p=36&y=1)  
 
-> Note that the function does this in binary format but representing it as a polynomial is exactly the same and is only used to make it easier to understand
-To convert from polynomial back to denary we can just substitue x=2 into a polynomial. In this case we see that 12 x 6 = 38 in $ GF(2^8) $
+> Note that the function does this in binary format but representing it as a polynomial is exactly the same and is only used to make it easier to understand. To convert from polynomial back to denary we can just substitue x=2 into a polynomial. In this case we see that 12 x 6 = 38 in $ GF(2^8) $
 {: .prompt-info }
   
 ### Now onto the transformation
