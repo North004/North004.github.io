@@ -169,7 +169,7 @@ before we cover ths transformation we first have to understsnd galios fields $ G
    $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $  
 
 7. **Converting**:  
-   Converting  to binary gives us `00011010` and in densry `26`:  
+   Converting  to binary gives us `00011010` and in denary `26`:  
    Thus giving us the following result:  
    $ 255 \times 3 = 26 $ in $ GF(2^8) $  
 
@@ -214,35 +214,38 @@ fn gal_mul(mut a: u8, mut b: u8) -> u8 {
    once b = 0 the result will return.
 
 - **Code Trace**:  
-   1. $ a(x) = x^3+x^2 $  $ b(x) = x^2 + x $ and $ r = 0 $  
-   2. $ a(x) = x^4 + x^3 $  $ b(x) = x + 1 $ and $ r = x^3+x^2 $   
-   3. $ a(x) = x^5+ x^4 $  $ b(x) = 1 $ and $ r = x^3 + x^2 + x^4 + x^3 $   
-   4. $ a(x) = x^6+x^5 $  $ b(x) = 0 $ and $ r = x^3 + x^2 + x^4 + x^3 + x^5 + x^4 $  
-   5. Since b is now equal to 0 the while loop terminates and r is returned:  
-     $ r = x^3 + x^2 + x^4 + x^3 +x^5 + x^4 = x^5 + (x^4 \oplus x^4) + (x^3 \oplus x^3) + x^2 = x^5 + 0 + 0 + x^2 = x^5 + x^2 $  
-     We can verify this using a tool like this [GF(2^8) Calculator](http://www.ee.unb.ca/cgi-bin/tervo/calc2.pl?num=1+1+0+0&den=0+1+1+0&f=m&p=36&y=1)  
+   1. $ a(x) = x^3+x^2 $,  $ b(x) = x^2 + x $,  $ r = 0 $  
+   2. $ a(x) = x^4 + x^3 $,  $ b(x) = x + 1 $,   $ r = x^3+x^2 $   
+   3. $ a(x) = x^5+ x^4 $,  $ b(x) = 1 $,   $ r = x^3 + x^2 + x^4 + x^3 $   
+   4. $ a(x) = x^6+x^5 $,  $ b(x) = 0 $,   $ r = x^3 + x^2 + x^4 + x^3 + x^5 + x^4 $  
+   5. $ b(x) = 0 $ so $ r $ is returned $ r = x^3 + x^2 + x^4 + x^3 +x^5 + x^4 = x^5 + (x^4 \oplus x^4) + (x^3 \oplus x^3) + x^2 = x^5 + 0 + 0 + x^2 = x^5 + x^2 $ We can verify this result using this calculator [GF(2^8) Calculator](http://www.ee.unb.ca/cgi-bin/tervo/calc2.pl?num=1+1+0+0&den=0+1+1+0&f=m&p=36&y=1)  
 
 
 ### Now onto the transformation
 Now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation $ P $ which is defined below:
 * $ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $.
-* $ P(c_i) = M \cdot c_i \space \space $  where $ i $ is column index and M is:
 
 $$
-M = \begin{bmatrix}
-2 & 3 & 1 & 1 \\
-1 & 2 & 3 & 1 \\
-1 & 1 & 2 & 3 \\
-3 & 1 & 1 & 2
+P\left(\begin{bmatrix} s_0  \\ s_1  \\ s_2  \\ s_3 \end{bmatrix}\right)
+=
+\begin{bmatrix}
+02 & 03 & 01 & 01 \\
+01 & 02 & 03 & 01 \\
+01 & 01 & 02 & 03 \\
+03 & 01 & 01 & 02
 \end{bmatrix}
-$$
-
-$$
-\mathbf{c_i'} = \begin{bmatrix} 
-(02 \cdot b_0) \oplus (03 \cdot b_1) \oplus (01 \cdot b_2) \oplus (01 \cdot b_3) \\ 
-(01 \cdot b_0) \oplus (02 \cdot b_1) \oplus (03 \cdot b_2) \oplus (01 \cdot b_3) \\ 
-(01 \cdot b_0) \oplus (01 \cdot b_1) \oplus (02 \cdot b_2) \oplus (03 \cdot b_3) \\ 
-(03 \cdot b_0) \oplus (01 \cdot b_1) \oplus (01 \cdot b_2) \oplus (02 \cdot b_3) 
+\begin{bmatrix}
+s_0 \\
+s_1 \\
+s_2 \\
+s_3 
+\end{bmatrix}
+=
+\begin{bmatrix} 
+(02 \cdot s_0) \oplus (03 \cdot s_1) \oplus (01 \cdot s_2) \oplus (01 \cdot s_3) \\ 
+(01 \cdot s_0) \oplus (02 \cdot s_1) \oplus (03 \cdot s_2) \oplus (01 \cdot s_3) \\ 
+(01 \cdot s_0) \oplus (01 \cdot s_1) \oplus (02 \cdot s_2) \oplus (03 \cdot s_3) \\ 
+(03 \cdot s_0) \oplus (01 \cdot s_1) \oplus (01 \cdot s_2) \oplus (02 \cdot s_3) 
 \end{bmatrix}
 $$
 
@@ -267,7 +270,12 @@ fn mix_cols(state: &mut [u8; 16]) {
 }
 ```
 
-
-
-
-
+## Add Round Key
+Adding the **Round Key** is fairly simple it is just the 128 bit block XOR with the 128 bit round key
+```rust
+fn add_round_key(state: &mut [u8; 16], key: &[u8; 16]) {
+    for (s, k) in state.iter_mut().zip(key.iter()) {
+        *s ^= k;
+    }
+}
+```
