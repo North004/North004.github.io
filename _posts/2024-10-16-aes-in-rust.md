@@ -207,7 +207,7 @@ fn gal_mul(mut a: u8, mut b: u8) -> u8 {
    $ xa(x) \cdot x^{-1}b(x) is still a(x)b(x) $  
    so now $ a(x) = xa(x) $ and $ b(x) = x^{-1}b(x)  
    If a(x) ever exceeds degree 8 it is reduced modulo the polynomial `0x1b` i.e the reduction polynomial we looked at before  
-   This repeats until b(x) is no longer divisible by x which implies the coefficiant of the of the polynomials constant is 1  
+   This repeats until b(x) is no longer divisible by x which implies the coefficiant of the of the polynomials constant term is 1  
    at this stage we can then add a(x) to the result and remove the 1 by performing a right shift on b(x)  
    once b = 0 the result will return.
 
