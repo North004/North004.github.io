@@ -279,49 +279,76 @@ fn add_round_key(state: &mut [u8; 16], key: &[u8; 16]) {
     }
 }
 ```
-## Key Expansion
-In 128 bit aes encrytption the plaintext undergoes 10 Rounds of encryption, however the cipher takes a key of length 128 bit so we need to expand our single 128 bit key into 10 128 bit keys one for each round, we can do this using the Rijendael key schedule algorithm which is as follows
 
-$$
-K = \begin{bmatrix}
-k_0 & k_4 & k_8 & k_{12} \\
-k_1 & k_5 & k_9 & k_{13} \\
-k_2 & k_6 & k_{10} & k_{14} \\
-k_3 & k_7 & k_{11} & k_{15}
-\end{bmatrix}
-\hspace{30pt}
-\begin{align*}
-w_0 &= [k_0,k_1,k_2,k_3] \\
-w_1 &= [k_4,k_5,k_6,k_7] \\
-w_2 &= [k_8,k_9,k_{10},k_{11}] \\
-w_3 &= [k_{12},k_{13},k_{14},k_{15}] 
-\end{align*}
-$$
+## AES-128 Key Schedule
 
-### **Key Expansion Algorithm**
-1. The First Key produced in the algorithm is the original key
-2. For each subsequent key the last word w_3 is shifted left
-3. Then each byte of this shifted word is substituted using the SBOX
-4. The first byte of the substitued word is Xored with the round constant specific to the round  
-5. The first word is Xored with temp word and previous key and the rest of the words are xored with the previous word with the byte of same index
+In AES-128, the key schedule expands the initial 128-bit key into 11 round keys (for 10 rounds), each 128 bits long.
+
+### Key Expansion Overview
+
+- **Initial key**: $K$ is 128 bits, represented as four 32-bit words $W_0, W_1, W_2, W_3$.
+- **Round keys**: The original key is the first round key and each subsequent round key is generated as 4 new words
+- **Total words**: $4 \times 11 = 44$ words in total, with 4 words for each of the 11 round keys.
+
+### Key Expansion Steps
+
+The AES key schedule uses:
+
+1. **SubWord**: A function that applies the AES SBOX (non-linear substitution) to each byte of the word.
+   
+   $$\text{SubWord}(W) = \text{Sbox}(W)$$
+
+2. **ShiftWord**: A function that cyclicaly rotates the bytes of a word left by one position.
+   
+   $$\text{ShiftWord}([b_0, b_1, b_2, b_3]) = [b_1, b_2, b_3, b_0]$$
+
+3. **Round Constant (RCON)**: A constant that is XORed with a word.
+
+   $$RCON[i] = \text{[0x02}^{i-1}, 0x00, 0x00, 0x00]$$
+
+### Round Key Generation
+
+1. **Initial Words**: The first four words $W_0, W_1, W_2, W_3$ come directly from the original key $K$.
+   
+2. **Next Words**: For $i = 4, 5, \dots, 43$:
+
+   - If $i$ is a multiple of 4, calculate:
+   
+     $$W_i = W_{i-4} \oplus \text{SubWord}(\text{ShiftWord}(W_{i-1})) \oplus RCON[i/4]$$
+
+   - Otherwise:
+   
+      $$W_i = W_{i-4} \oplus W_{i-1}$$
 
 ```rust
+//Here is a pre-computed list that contains the first byte for each Round Constant
+const RCON: [u8; 10] = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36];
+
 fn generate_round_keys(key: &[u8; 16]) -> [[u8; 16]; 11] {
     let mut round_keys = [[0u8; 16]; 11];
+    //sets the first round key to the original key
     round_keys[0].copy_from_slice(key);
+    //creates a temporary word that we can perform operations on
     let mut temp = [0u8; 4];
     for i in 1..11 {
+        //sets the temp value to  the last word of the previous round key
         temp.copy_from_slice(&round_keys[i - 1][12..16]);
+        //rotares the temp left by 1 value
         temp.rotate_left(1);
-
+        //substitue each byte in the word using SBOX lookup table
         for byte in &mut temp {
             *byte = SBOX[*byte as usize];
         }
-
+        //XOR's the temp word with the Round constant for the round
         temp[0] ^= RCON[i - 1];
-
-        for j in 0..4  {
+        //loops over the 4 words in the round key applying the following operations
+        for j in 0..4 {
+            //the round keys first word is a multiple of 4 so we xor with the temp 
+            // which is SubWord(ShiftWord(W_i)) xor RCON[i] thus mirroring the equation above
             round_keys[i][j] = round_keys[i - 1][j] ^ temp[j];
+            //for the next 3 words with simply XOR with the previous word of the current round key
+            //and the word in the same position on the previous round keys (W_i-1 and W_i_4) corrospondingly
+            // we repeat this 4 times for each byte of the 4 words
             round_keys[i][j + 4] = round_keys[i - 1][j + 4] ^ round_keys[i][j];
             round_keys[i][j + 8] = round_keys[i - 1][j + 8] ^ round_keys[i][j + 4];
             round_keys[i][j + 12] = round_keys[i - 1][j + 12] ^ round_keys[i][j + 8];
@@ -329,5 +356,23 @@ fn generate_round_keys(key: &[u8; 16]) -> [[u8; 16]; 11] {
     }
 
     round_keys
+}
+```
+
+## Encrypting A Block
+We can now combine this all together to implement the block encryption function shown below
+```rust
+pub fn block_encrypt(state: &mut [u8; 16], key: &[u8; 16]) {
+    let round_keys = generate_round_keys(key);
+    add_round_key(state, &round_keys[0]);
+    for round in round_keys.iter().take(10).skip(1) {
+        sub_bytes(state);
+        shift_rows(state);
+        mix_cols(state);
+        add_round_key(state, round);
+    }
+    sub_bytes(state);
+    shift_rows(state);
+    add_round_key(state, &round_keys[10]);
 }
 ```
