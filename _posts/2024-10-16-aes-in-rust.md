@@ -279,3 +279,55 @@ fn add_round_key(state: &mut [u8; 16], key: &[u8; 16]) {
     }
 }
 ```
+## Key Expansion
+In 128 bit aes encrytption the plaintext undergoes 10 Rounds of encryption, however the cipher takes a key of length 128 bit so we need to expand our single 128 bit key into 10 128 bit keys one for each round, we can do this using the Rijendael key schedule algorithm which is as follows
+
+$$
+K = \begin{bmatrix}
+k_0 & k_4 & k_8 & k_{12} \\
+k_1 & k_5 & k_9 & k_{13} \\
+k_2 & k_6 & k_{10} & k_{14} \\
+k_3 & k_7 & k_{11} & k_{15}
+\end{bmatrix}
+\hspace{30pt}
+\begin{align*}
+w_0 &= [k_0,k_1,k_2,k_3] \\
+w_1 &= [k_4,k_5,k_6,k_7] \\
+w_2 &= [k_8,k_9,k_{10},k_{11}] \\
+w_3 &= [k_{12},k_{13},k_{14},k_{15}] 
+\end{align*}
+$$
+
+### **Key Expansion Algorithm**
+1. The First Key produced in the algorithm is the original key
+2. For each subsequent key the last word w_3 is shifted left
+3. Then each byte of this shifted word is substituted using the SBOX
+4. The first byte of the substitued word is Xored with the round constant specific to the round  
+5. The first word is Xored with temp word and previous key and the rest of the words are xored with the previous word with the byte of same index
+
+```rust
+fn generate_round_keys(key: &[u8; 16]) -> [[u8; 16]; 11] {
+    let mut round_keys = [[0u8; 16]; 11];
+    round_keys[0].copy_from_slice(key);
+    let mut temp = [0u8; 4];
+    for i in 1..11 {
+        temp.copy_from_slice(&round_keys[i - 1][12..16]);
+        temp.rotate_left(1);
+
+        for byte in &mut temp {
+            *byte = SBOX[*byte as usize];
+        }
+
+        temp[0] ^= RCON[i - 1];
+
+        for j in 0..4  {
+            round_keys[i][j] = round_keys[i - 1][j] ^ temp[j];
+            round_keys[i][j + 4] = round_keys[i - 1][j + 4] ^ round_keys[i][j];
+            round_keys[i][j + 8] = round_keys[i - 1][j + 8] ^ round_keys[i][j + 4];
+            round_keys[i][j + 12] = round_keys[i - 1][j + 12] ^ round_keys[i][j + 8];
+        }
+    }
+
+    round_keys
+}
+```
