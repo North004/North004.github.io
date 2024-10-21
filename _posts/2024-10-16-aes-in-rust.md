@@ -174,6 +174,47 @@ before we cover ths transformation we first have to understsnd galios fields $ G
 > The operators + and $ \oplus $ are interchangable ans used only to clarify when XOR is being used
 {: .prompt-info }
 
+### Rust Implementation
+```rust
+fn gal_mul(mut a: u8, mut b: u8) -> u8 {
+   //initially sets result to 0
+    let mut result = 0u8;
+    //loops while b is greater than 0
+    while b > 0 {
+        // checks if least significant bit is on and executes below codeif it is
+        if b & 1 != 0 {
+            // XOR's the result with a i.e addition in GF(2^8)
+            result ^= a;
+        }
+        // We than check if the most significant bit is on
+        let carry = a & 0x80;
+        // Then we perform a binary shift to the left i.e multiplication by 2 i.e x in polynomial form
+        a <<= 1;
+        // If the most significant bit was on we the XOR a with the reduction polynomial x^8+x^4+x^3+x^1+1 which is 0x1b in hexadecimal
+        // thus keeping a and by extension the result in GF(2^8) by not allowing degree to exceed 7 i.e <= 7 
+        if carry != 0 {
+            a ^= 0x1b;
+        }
+        // Finally we shift b one place to the right i.e division by 2 or x
+        b >>= 1;
+    }
+    result
+}
+```
+### Explaination of Gal_Mul
+1. **Idea Behind Function**:
+   The above function factors out x from the polynomial b(x) and multiplies it to a(x) this doesnt effect the result as:  
+   $ xa(x) \cdot x^{-1}b(x) is still a(x)b(x) $  
+   so now $ a(x) = xa(x) $ and $ b(x) = x^{-1}b(x)  
+   If a(x) ever exceeds degree 8 it is reduced modulo the polynomial `0x1b` i.e the reduction polynomial we looked at before  
+   This repeats until b(x) is no longer divisible by x which implies the coefficiant of the of the polynomials constant is 1  
+   at this stage we can then add a(x) to the result and remove the 1 by performing a right shift on b(x)  
+   once b = 0 the result will return.
+
+2. **Code Trade**:  
+  $ a(x) = x^3+x^2 b(x) = x^2 + x $  
+
+
 ### Now onto the transformation
 Now that we have coverd the finite field $ GF(2^8) $ we can continue to implement the transformation $ P $ which is defined below:
 * $ P : \mathbb{B}^{4 \times 1} \to \mathbb{B}^{4 \times 1} $.
