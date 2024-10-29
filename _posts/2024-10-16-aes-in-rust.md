@@ -147,28 +147,30 @@ before we cover ths transformation we first have to understsnd galios fields $ G
 
 3. **Polynomial Multiplication**:  
    We will now multiply both polynomias together:  
-   $ (x^7+x^6+x^5+x^5+x^4+x^3+x^2+x+1)(x+1) = x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+x^7+x^6+x^5+x^4+x^3+x^2+x^1+1 $  
+   $ a(x) = x^7+x^6+x^5+x^5+x^4+x^3+x^2+x+1 $  
+   $ b(x) = x+1 $  
+   $ a(x)b(x) = x^8+x^7+x^6+x^5+x^4+x^3+x^2+x+x^7+x^6+x^5+x^4+x^3+x^2+x^1+1 $   
 
-4. **Simplification**:  
+5. **Simplification**:  
    We can now rearange this and use the fact that $ x^n \oplus x^n = 0 $:  
    $x^8 + (x^7\oplus x^7) +(x^6\oplus x^6)+(x^5\oplus x^5)+(x^4\oplus x^4)+(x^3\oplus x^3)+(x^2\oplus x^2)+(x^1\oplus x^1) + 1$  
    This will give us the following: 
    $ x^8 + 1 $  
 
-5. **Modulo Reduction**:  
+6. **Modulo Reduction**:  
    But this does not belong in the field $ GF(2^8) $ so we must reduce modulo the polynomial:  
    $ x^8+x^4+x^3+x^1+1 $  
    We can use the following equivilance to reduce the polynomial:  
    $ x^8 \equiv x^4 + x^3 + x^1 + 1\space(mod \space x^8+x^4+x^3+x^1) $  
 
 
-6. **Simplification**: 
+7. **Simplification**: 
    This is the reduced polynomial:  
    $ x^4 + x^3 +x^1 + 1 + 1 $  
    We can now simplify it using additive property of the field:  
    $ x^4+x^3+x^1+(1 \oplus 1) = x^4+x^3+x $  
 
-7. **Converting**:  
+8. **Converting**:  
    Converting  to binary gives us `00011010` and in denary `26`:  
    Thus giving us the following result:  
    $ 255 \times 3 = 26 $ in $ GF(2^8) $  
