@@ -11,13 +11,13 @@ image:
 ---
 
 ## Intro 
-AES ( advanced encryption standard ) also known as Rijndael is a specification for the encryption of electronic data established by the US National institute of standards and technology NIST in 2001.
-AES is a block cipher with a block size of 128 bits that supports 3 key sizes of length 128, 192 and 256 bits.
-AES is being used by most militaries around the world and for most encryption needs including ssh.
+AES (advanced encryption standard) also known as Rijndael is a specification for the encryption of electronic data established by the US National institute of standards and technology NIST in 2001.
+AES is a block cipher with a block size of 128 bits that supports 3 key sizes of length 128,192 and 256 bits.
+AES is used everywhere in information technology from SSH to HTTPS
 
 ## Project Goal
-In this tutorial we will be implementing 128 Bit AES
-> Do not use any unaudited encryption in production for a secure and tested alternative use [Aes-Gcm](https://crates.io/crates/aes-gcm)
+In this tutorial we will be implementing 128 bit Aes encryption
+> Do not use any untested encryption in production for a secure and tested alternative use [Aes-Gcm](https://crates.io/crates/aes-gcm)
 {: .prompt-danger }
 
 ## Overview 
@@ -205,16 +205,17 @@ fn gal_mul(mut a: u8, mut b: u8) -> u8 {
     result
 }
 ```
-### Explaination of Gal_Mul
+### Explaination of Galios Multiplication Function Gal_Mul()
 - **Idea Behind Function**:  
    The above function factors out x from the polynomial b(x) and multiplies it to a(x) this doesnt effect the result as:  
-   $ xa(x) \cdot x^{-1}b(x) $ is still $ a(x)b(x) $  
-   so now $ a(x) = xa(x) $ and $ b(x) = x^{-1}b(x)  
+   $ x \cdot a(x) \cdot x^{-1} \cdot b(x) = a(x)b(x) $   
+   So now  
+   $ a(x) = x \cdot a(x) $ And $ b(x) = x^{-1} \cdot b(x) $    
    If a(x) ever exceeds degree 8 it is reduced modulo the polynomial `0x1b` i.e the reduction polynomial we looked at before  
-   This repeats until b(x) is no longer divisible by x which implies the coefficiant of the of the polynomials constant term is 1  
+   This repeats until b(x) is no longer divisible by x which implies the polynomial is constant  
    at this stage we can then add a(x) to the result and remove the 1 by performing a right shift on b(x)  
    once b = 0 the result will return.
-
+  
 - **Code Trace**:  
    1. $ a(x) = x^3+x^2 $,  $ b(x) = x^2 + x $,  $ r = 0 $  
    2. $ a(x) = x^4 + x^3 $,  $ b(x) = x + 1 $,   $ r = x^3+x^2 $   
