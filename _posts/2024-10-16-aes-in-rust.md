@@ -379,3 +379,13 @@ pub fn block_encrypt(state: &mut [u8; 16], key: &[u8; 16]) {
     add_round_key(state, &round_keys[10]);
 }
 ```
+
+## Decrypting a block
+Now that we can encrypt this data we have finished this part of the cipher, but without a way to restore the ciphertext back to plaintext this entire function is useless
+that is why next we will work on decrypting a block todo this we will need to implement all the above functions inverse operations, this includes
+- inv_sub_bytes
+- inv_shift_rows
+- inv_mix_cols
+Fortunatley this is possible with minor adjustments to the normalfunctions, additionaly the function add_key is its own inverse the proof for this is below
+$ let a = ab binary numbe
+
