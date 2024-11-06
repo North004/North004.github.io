@@ -9,3 +9,5 @@ image:
   path: /assets/img/common/md5-hashing.jpg
   alt: Logo of a computer motherboard with a padlock across it
 ---
+
+# Coming Soon
