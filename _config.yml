@@ -38,7 +38,7 @@ social:
   email: northernskytechnology@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/NorthSky004 # change to your Twitter homepage
+    # https://twitter.com/NorthSky004 # change to your Twitter homepage
     - https://github.com/North004 # change to your GitHub homepage
     - https://ko-fi.com/north004 # kofi
     # Uncomment below to add more social links
