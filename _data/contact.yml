@@ -13,6 +13,10 @@
 - type: rss
   icon: "fas fa-rss"
   noblank: true
+
+- type: kofi
+  icon: "fas fa-kofi"
+  url: "https://ko-fi.com/north004"
 # Uncomment and complete the url below to enable more contact options
 #
 # - type: mastodon
