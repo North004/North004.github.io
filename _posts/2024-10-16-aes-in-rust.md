@@ -76,7 +76,7 @@ fn sub_bytes(state: &mut [u8;16]) {
 ## Shift Rows
 the **shift rows** operation can be represented as a map $$ M $$, which transforms a $$ 4 \times 4 $$ matrix, defined below:
 - $ M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4} $
-- $ \mathbb{B} $ is the set of bytes  $ \mathbb{B} = \{0,1\}^8 $.
+- $ \mathbb{B} $ represents the set of binary digits.
 
 The map M takes a matrix, and transforms it cyclicly by shifting the ith rows i places to the left, this is shown below.
 
@@ -383,9 +383,11 @@ pub fn block_encrypt(state: &mut [u8; 16], key: &[u8; 16]) {
 ## Decrypting a block
 Now that we can encrypt this data we have finished this part of the cipher, but without a way to restore the ciphertext back to plaintext this entire function is useless
 that is why next we will work on decrypting a block todo this we will need to implement all the above functions inverse operations, this includes
+- add_round_key
 - inv_sub_bytes
 - inv_shift_rows
 - inv_mix_cols
+
 Fortunatley this is possible with minor adjustments to the normalfunctions, additionaly the function add_key is its own inverse the proof for this is below
 
 ## Add_key Inverse  Proof
@@ -435,6 +437,138 @@ fn inv_sub_bytes(state: &mut [u8; 16]) {
 }
 ```
 
-## Inv_Shift_Rows
-To  implement this function we need to take a look back at what the original function did we can recall that it shifted the ith row i places to the left, so the inverse of this would be shifting th ith row i places to the right  
+## Inv Sift Rows
+To  implement this function we need to take a look back at what the original function did we can recall that it shifted the ith row i places to the left, so the inverse of this would be shifting th ith row i places to the right  note that indexing the rows start at 0 so the first row is shifted 0 rows to the right$
+$$
+M\left(\begin{bmatrix} 
+b_0 & b_4 & b_8 & b_{12} \\
+b_1 & b_5 & b_9 & b_{13} \\
+b_2 & b_6 & b_{10} & b_{14} \\
+b_3 & b_7 & b_{11} & b_{15}
+\end{bmatrix}\right)
+=
+\begin{bmatrix} 
+b_0 & b_4 & b_8 & b_{12} \\
+b_{13} & b_1 & b_5 & b_9 \\
+b_{10} & b{14} & b_2 & b_6 \\
+b_7 & b_{11} & b_{15} & b_3 
+\end{bmatrix}\right)
+=
+$$
+
+## Inverse Mix Cols
+The inverse mix cols function is simply a linear transformation $ M^{-1} $ applied to the current state of the block calculating this map is out of the scope here but it is simply the inverse of M in the field $ GF(2^8) $ below is the code that we can use to achieve this
+
+
+```rust
+fn inv_mix_cols(state: &mut [u8; 16]) {
+    let temp = *state;
+    for col in 0..4 {
+        let offset = col * 4;
+        let s = [
+            temp[offset],
+            temp[offset + 1],
+            temp[offset + 2],
+            temp[offset + 3],
+        ];
+
+        state[offset] =
+            gal_mul(s[0], 0x0e) ^ gal_mul(s[1], 0x0b) ^ gal_mul(s[2], 0x0d) ^ gal_mul(s[3], 0x09);
+        state[offset + 1] =
+            gal_mul(s[0], 0x09) ^ gal_mul(s[1], 0x0e) ^ gal_mul(s[2], 0x0b) ^ gal_mul(s[3], 0x0d);
+        state[offset + 2] =
+            gal_mul(s[0], 0x0d) ^ gal_mul(s[1], 0x09) ^ gal_mul(s[2], 0x0e) ^ gal_mul(s[3], 0x0b);
+        state[offset + 3] =
+            gal_mul(s[0], 0x0b) ^ gal_mul(s[1], 0x0d) ^ gal_mul(s[2], 0x09) ^ gal_mul(s[3], 0x0e);
+    }
+}
+```
+
+## Decrypting the block
+Now we have made all the operations that need to be appliedin the decryption step we can simply implment it note that in the decrypting process we are just applying the operations in the opposite order of the enrcyption processes thus undoing it and returning to our original plaintext 
+so instead of starting at round 1 we start at round 11 (index 10 because 0 based indexing) for the inital adding of the round key and then iterate the main block with round keys 10 to 2 and then apply the final round 1, this is the inverse of the enrcypting funcion and thus will return us with our original block
+
+```rust
+pub fn block_decrypt(state: &mut [u8; 16], key: &[u8; 16]) {
+    let round_keys = generate_round_keys(key);
+    add_round_key(state, &round_keys[10]);
+    for round in round_keys.iter().take(10).skip(1).rev() {
+        inv_shift_rows(state);
+        inv_sub_bytes(state);
+        add_round_key(state, round);
+        inv_mix_cols(state);
+    }
+    inv_shift_rows(state);
+    inv_sub_bytes(state);
+    add_round_key(state, &round_keys[0]);
+}
+```
+
+## Finishing up 
+Now we have completley finished implementing the encryption and decryption of blocks and can now being testing our applicaiton below are a series of tests written to ensure that each operation works correctly aswell as using some test vectors from this nist pdf
+https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf
+
+```rust
+#[cfg(test)]
+mod tests {
+    use hex_lit::hex;
+
+    use super::*;
+    #[test]
+    fn test_shift_rows() {
+        let mut state = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
+        let expected = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
+        let original = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
+        shift_rows(&mut state);
+        assert_eq!(state, expected);
+        inv_shift_rows(&mut state);
+        assert_eq!(state, original);
+    }
+    #[test]
+    fn test_byte_sub() {
+        let original = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
+        let mut state = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
+        sub_bytes(&mut state);
+        inv_sub_bytes(&mut state);
+        assert_eq!(state, original);
+    }
+    #[test]
+    fn test_gal_mul() {
+        //verified by hand
+        assert_eq!(gal_mul(2, 2), 4);
+        assert_eq!(gal_mul(6, 3), 10);
+        assert_eq!(gal_mul(7, 12), 36);
+        assert_eq!(gal_mul(12, 12), 80);
+    }
+    #[test]
+    fn test_col_shift() {
+        //Note this works i calculated the matrix by hand
+        let mut state = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
+        let original = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
+        mix_cols(&mut state);
+        inv_mix_cols(&mut state);
+        assert_eq!(state, original);
+    }
+    #[test]
+    fn test_encryption() {
+        //values taken from test vector https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf
+        let key = hex!("000102030405060708090a0b0c0d0e0f");
+        let mut plaintext = hex!("00112233445566778899aabbccddeeff");
+        let expected = hex!("69c4e0d86a7b0430d8cdb78070b4c55a");
+        block_encrypt(&mut plaintext, &key);
+        assert_eq!(plaintext, expected);
+    }
+    #[test]
+    fn test_decryption() {
+        //values taken from test vector https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf
+        let key = hex!("000102030405060708090a0b0c0d0e0f");
+        let mut ciphertext = hex!("69c4e0d86a7b0430d8cdb78070b4c55a");
+        let expected = hex!("00112233445566778899aabbccddeeff");
+        block_decrypt(&mut ciphertext, &key);
+        assert_eq!(ciphertext, expected);
+    }
+}
+```
+
+
 
