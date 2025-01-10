@@ -10,6 +10,8 @@ image:
   alt: Logo of a computer motherboard with a padlock across it
 ---
 
+# AES in Rust
+
 ## Intro 
 AES (advanced encryption standard) also known as Rijndael is a specification for the encryption of electronic data established by the US National institute of standards and technology NIST in 2001.
 AES is a block cipher with a block size of 128 bits that supports 3 key sizes of length 128,192 and 256 bits.
@@ -20,7 +22,7 @@ In this tutorial we will be implementing 128 bit Aes encryption
 > Do not use any untested encryption in production for a secure and tested alternative use [Aes-Gcm](https://crates.io/crates/aes-gcm)
 {: .prompt-danger }
 
-## Overview 
+## Encryption Overview 
 Aes encryption can be seperated into 4 steps allowing us to easier understand the problem.
 1. Generating Round Keys
 2. Adding Round Key to block
@@ -43,7 +45,7 @@ Aes encryption can be seperated into 4 steps allowing us to easier understand th
  
  In the next step you will learn to implement these functions , aswell as understandnig what they do and any maths required to understand it.
 
-## Sub Bytes
+### Sub Bytes
 The SBOX ( substituon box ) is a bijective map that maps each input byte to a corrosponding output byte below is this substitution box that is computed in such a way that it adds nonlinearity thus significantly improving resilliance to linear and differential cryptoanalysis attacks.
 ```rust
 const SBOX: [u8; 256] = [
@@ -73,7 +75,7 @@ fn sub_bytes(state: &mut [u8;16]) {
 }
 ```
 
-## Shift Rows
+### Shift Rows
 the **shift rows** operation can be represented as a map $$ M $$, which transforms a $$ 4 \times 4 $$ matrix, defined below:
 - $ M : \mathbb{B}^{4 \times 4} \to \mathbb{B}^{4 \times 4} $
 - $ \mathbb{B} $ represents the set of binary digits.
@@ -123,11 +125,11 @@ fn shift_rows(state: &mut [u8; 16]) {
 this works by passing a mutable referance the block in its current state and creating a temporary copy where the values can be read from and assigned to the state
 which changes it in place.
 
-## Mix Cols
+### Mix Cols
 The **mix cols** operation can be represented as linear transformation $ P $ in the finite field $ GF(2^8) $ that transforms each column in the block
 before we cover ths transformation we first have to understsnd galios fields $ GF(2^8) $.
 
-### $ GF(2^8) $ Galios Field
+#### $ GF(2^8) $ Galios Field
 - $ GF(2^8) $ is a finite field with $ 2^8 $ elements.
 - The elements of this field are 8 bit numbers (bytes) represented as binary polynomials.
 - Addition in $ GF(2^8) $ is defined as bitwise XOR between two bytes as $ a \oplus b $.
@@ -135,7 +137,7 @@ before we cover ths transformation we first have to understsnd galios fields $ G
 - Relation between binary form and polynomial form:  
   $ b_7b_6b_5b_4b_3b_2b_1b_0 = b_7x^7 + b_6x^6 + b_5x^5 + b_4x^4 + b_3x^3 + b_2x^2 + b_1x + b_0 $  
 
-### Example in $ GF(2^8) $
+#### Example in $ GF(2^8) $
 1. **Problem Setup**:  
   We will now show the multiplication of 255 by 3 in $GF(2^8)$:  
   $255 \times 3$  
@@ -178,7 +180,7 @@ before we cover ths transformation we first have to understsnd galios fields $ G
 > The operators + and $ \oplus $ are interchangable ans used only to clarify when XOR is being used
 {: .prompt-info }
 
-### Rust Implementation
+#### Rust Implementation
 ```rust
 fn gal_mul(mut a: u8, mut b: u8) -> u8 {
    //initially sets result to 0
@@ -205,7 +207,7 @@ fn gal_mul(mut a: u8, mut b: u8) -> u8 {
     result
 }
 ```
-### Explaination of Galios Multiplication Function Gal_Mul()
+#### Explaination of Galios Multiplication Function Gal_Mul()
 - **Idea Behind Function**:  
    The above function factors out x from the polynomial b(x) and multiplies it to a(x) this doesnt effect the result as:  
    $ x \cdot a(x) \cdot x^{-1} \cdot b(x) = a(x)b(x) $   
@@ -273,7 +275,7 @@ fn mix_cols(state: &mut [u8; 16]) {
 }
 ```
 
-## Add Round Key
+### Add Round Key
 Adding the **Round Key** is fairly simple it is just the 128 bit block XOR with the 128 bit round key
 ```rust
 fn add_round_key(state: &mut [u8; 16], key: &[u8; 16]) {
@@ -283,17 +285,17 @@ fn add_round_key(state: &mut [u8; 16], key: &[u8; 16]) {
 }
 ```
 
-## AES-128 Key Schedule
+### AES-128 Key Schedule
 
 In AES-128, the key schedule expands the initial 128-bit key into 11 round keys (for 10 rounds), each 128 bits long.
 
-### Key Expansion Overview
+#### Key Expansion Overview
 
 - **Initial key**: $K$ is 128 bits, represented as four 32-bit words $W_0, W_1, W_2, W_3$.
 - **Round keys**: The original key is the first round key and each subsequent round key is generated as 4 new words
 - **Total words**: $4 \times 11 = 44$ words in total, with 4 words for each of the 11 round keys.
 
-### Key Expansion Steps
+#### Key Expansion Steps
 
 The AES key schedule uses:
 
@@ -309,7 +311,7 @@ The AES key schedule uses:
 
    $$RCON[i] = \text{[0x02}^{i-1}, 0x00, 0x00, 0x00]$$
 
-### Round Key Generation
+#### Round Key Generation
 
 1. **Initial Words**: The first four words $W_0, W_1, W_2, W_3$ come directly from the original key $K$.
    
@@ -362,7 +364,7 @@ fn generate_round_keys(key: &[u8; 16]) -> [[u8; 16]; 11] {
 }
 ```
 
-## Encrypting A Block
+### Encrypting A Block
 We can now combine this all together to implement the block encryption function shown below
 ```rust
 pub fn block_encrypt(state: &mut [u8; 16], key: &[u8; 16]) {
@@ -380,7 +382,7 @@ pub fn block_encrypt(state: &mut [u8; 16], key: &[u8; 16]) {
 }
 ```
 
-## Decrypting a block
+## Decryption Overview
 Now that we can encrypt this data we have finished this part of the cipher, but without a way to restore the ciphertext back to plaintext this entire function is useless
 that is why next we will work on decrypting a block todo this we will need to implement all the above functions inverse operations, this includes
 - add_round_key
@@ -390,7 +392,7 @@ that is why next we will work on decrypting a block todo this we will need to im
 
 Fortunatley this is possible with minor adjustments to the normalfunctions, additionaly the function add_key is its own inverse the proof for this is below
 
-## Add_key Inverse  Proof
+### Add_key Inverse  Proof
 The Add_key function simply performs Xor operation on each bit from the block with each bit of the key as both are 128 bits, so to prove this function is self invertible all we need to show is that xor itself is self invertible, this is shown below.
 supose b and k are both elements from the set {0,1}, then xor is represented below
 $ b \oplus k $  
@@ -406,7 +408,7 @@ This proves that xor is self invertible and thus the add_key function
 
 Now we will begin implementing the inverse of the functions specificed above.
 
-## Inv_Sub_Bytes
+### Inv_Sub_Bytes
 to implement this function we will first need to construct the inverse of the SBOX this can simply be achieved by setting the index of each value in the sbox to its value and the value of each value in the sbox to its index below is a table constructed this way
 ```rust
 const INVSBOX: [u8; 256] = [
@@ -437,7 +439,7 @@ fn inv_sub_bytes(state: &mut [u8; 16]) {
 }
 ```
 
-## Inv Sift Rows
+### Inv Sift Rows
 To  implement this function we need to take a look back at what the original function did we can recall that it shifted the ith row i places to the left, so the inverse of this would be shifting th ith row i places to the right  note that indexing the rows start at 0 so the first row is shifted 0 rows to the right$
 $$
 M\left(\begin{bmatrix} 
@@ -456,10 +458,8 @@ b_7 & b_{11} & b_{15} & b_3
 =
 $$
 
-## Inverse Mix Cols
+### Inverse Mix Cols
 The inverse mix cols function is simply a linear transformation $ M^{-1} $ applied to the current state of the block calculating this map is out of the scope here but it is simply the inverse of M in the field $ GF(2^8) $ below is the code that we can use to achieve this
-
-
 ```rust
 fn inv_mix_cols(state: &mut [u8; 16]) {
     let temp = *state;
@@ -484,7 +484,7 @@ fn inv_mix_cols(state: &mut [u8; 16]) {
 }
 ```
 
-## Decrypting the block
+### Decrypting the block
 Now we have made all the operations that need to be appliedin the decryption step we can simply implment it note that in the decrypting process we are just applying the operations in the opposite order of the enrcyption processes thus undoing it and returning to our original plaintext 
 so instead of starting at round 1 we start at round 11 (index 10 because 0 based indexing) for the inital adding of the round key and then iterate the main block with round keys 10 to 2 and then apply the final round 1, this is the inverse of the enrcypting funcion and thus will return us with our original block
 
