@@ -14,7 +14,7 @@ timezone: Europe/London
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: North004 # the main title
+title: NorthMatrix # the main title
 
 tagline: Random Shit I Like # it will display as the subtitle
 
@@ -23,19 +23,19 @@ description: >- # used by seo meta and the atom feedMy
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
-url: "https://North004.github.io"
+url: "https://northmatrix.github.io"
 
 github:
-  username: North004 # change to your GitHub username
+  username: NorthMatrix # change to your GitHub username
 
 twitter:
-  username: NorthSky004 # change to your Twitter username
+  username: NorthMatrix # change to your Twitter username
 
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: Jamie
-  email: contactme@jamiegrant.dev # change to your email address
+  name: NorthMatrix
+  email: NorthMatrix@pm.me # change to your email address
   links:
     # The first element serves as the copyright owner's link
     - https://twitter.com/NorthSky004 # change to your Twitter homepage
